@@ -19,16 +19,13 @@ Route::get('/contact', function () {
 
 Route::get('/posts', function () {
  $posts = Post::latest()->get();
- return view('posts', ['title' => 'My Blog', 'posts' => $posts]);
-});
+ return view('posts', ['title' => 'Blog', 'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString()]);
+//  return view('posts', ['title' => 'Blog', 'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->simplePaginate(9)->withQueryString()]);
+ });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
  return view('post', ['title' => 'Single Post Jamal', 'post' => $post]);
 });
-
-// Route::get('/authors/{user}', function (User $user) {
-//  return view('posts', ['title' => 'Articles by' . $user->name, 'posts' => $user->posts]);
-// }); Eloquent Relationship
 
 Route::get('/authors/{user:username}', function (User $user) {
  return view('posts', ['title' => count(    $user->posts) .  ' Articles by ' . $user->name, 'posts' => $user->posts]);
